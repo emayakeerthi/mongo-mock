@@ -1,10 +1,19 @@
-import { MongoClient } from "mongodb";
-import { MongoMemoryServer } from "mongodb-memory-server";
-
+const { MongoClient } = require("mongodb");
+const { MongoMemoryServer } = require("mongodb-memory-server");
 async function setupDatabase() {
     // Create an instance of MongoMemoryServer
-    const mongod = await MongoMemoryServer.create();
-  
+    const mongod = await MongoMemoryServer.create({
+        binary: {
+            os: {
+                os: 'linux',
+                dist: 'debian',
+                release: '10'
+            },
+            version: '6.0.18',
+            downloadDir: '/tmp'
+        },
+    });
+    console.log('mongod', typeof mongod)
     // Get the URI to connect to the in-memory database
     const uri = mongod.getUri();
 
@@ -64,4 +73,6 @@ async function setupDatabase() {
     }
   }
   
-  runExample().catch(console.error);
+  runExample().catch((err) => {
+      console.log(err)
+  });
